@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names, duplicate_ignore
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:please/UserId_global.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+// ignore: camel_case_types
 class Post_post extends StatefulWidget {
   const Post_post({Key? key}) : super(key: key);
 
@@ -13,12 +16,20 @@ class Post_post extends StatefulWidget {
   _Post_postState createState() => _Post_postState();
 }
 
+// ignore: camel_case_types
 class _Post_postState extends State<Post_post> {
+  var sendSuccessfully=false;
+  // ignore: non_constant_identifier_names
   var controller_start;
+  // ignore: non_constant_identifier_names
   var controller_end;
+  // ignore: non_constant_identifier_names
   var controller_decoration;
+  // ignore: non_constant_identifier_names
   var controller_people;
+  // ignore: non_constant_identifier_names
   var ddate;
+  // ignore: non_constant_identifier_names
   var ttime;
   var t_year;
   var t_month;
@@ -40,9 +51,9 @@ class _Post_postState extends State<Post_post> {
   Future<void> Send_post() async{
     Dio dio = Dio();
     var ssstmp = controller_people.text;
-    var ss_tmp = int.parse(ssstmp);
+    var ssTmp = int.parse(ssstmp);
     String url = "http://$ST_url/posts";
-    Map<String,dynamic> mapp = Map();
+    Map<String,dynamic> mapp = {};
     mapp["content"] = controller_decoration.text;
     mapp["posterId"] = UserId_Global;
     mapp["startLocation"] = controller_start.text;
@@ -53,16 +64,25 @@ class _Post_postState extends State<Post_post> {
     mapp["hour"] = t_hour;
     mapp["minute"] = t_minute;
     mapp["flag"] = 0;
+    mapp['heading']=User_heading;
     //mapp["teamNumber"] = ss_tmp;
     mapp["posterName"] = User_Nickname;
-    Map <String,dynamic> mmmappp = Map();
-    mmmappp["teamNumber"] =ss_tmp;
+    Map <String,dynamic> mmmappp = {};
+    mmmappp["teamNumber"] =ssTmp;
     if (kDebugMode) {
       print(mapp);
     }
-    Response response = await dio.post(url,data: mapp,queryParameters: mmmappp);
-    if (kDebugMode) {
-      print(response);
+    try{
+      Response response = await dio.post(url,data: mapp,queryParameters: mmmappp);
+      if (kDebugMode) {
+        print(response);
+      }
+      sendSuccessfully=response.data["flag"];
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
+      }
+      sendSuccessfully =false;
     }
 
   }
@@ -86,11 +106,21 @@ class _Post_postState extends State<Post_post> {
         actions: <Widget>[
           IconButton(
             onPressed: (){
-              Send_post();
+              if(controller_start.text==''||controller_end.text==''||controller_people==''||ddate.toString()==''||ttime.toString()==''||controller_decoration.text.toString()=='') {
+                  Fluttertoast.showToast(msg: '请完善信息！');
+                }else{
+                sendSuccessfully=false;
+              Send_post().then((value) {
+                if(sendSuccessfully==true)  {
+                  Fluttertoast.showToast(msg: '发帖成功！');
+                  Navigator.of(context).pop('refresh');
+                }
+                else {
+                  Fluttertoast.showToast(msg: '发帖失败');
+                }
+              });
               //print('发送创建帖子请求');
-              Fluttertoast.showToast(msg: '发帖成功！');
-              Navigator.of(context).pop();
-            },
+            }},
             icon:const ImageIcon(AssetImage('assets/png/wancheng.png'),color: Colors.black),
           )
         ],
@@ -100,17 +130,17 @@ class _Post_postState extends State<Post_post> {
           child: SizedBox(height: height,width: width-50,child: Column(mainAxisAlignment:MainAxisAlignment.start,children: <Widget>[
             const SizedBox(height: 16,),
             SizedBox(height: 24,width: width-50,child: const Text('出发地',style: TextStyle(fontSize: 18),),),
-            TextField(controller:controller_start,decoration: const InputDecoration(hintText: '请输入出发地',)),
-            const SizedBox(height: 12,),
+            TextField(controller:controller_start,decoration: const InputDecoration(hintText: '请输入出发地',),maxLength: 15,),
+            const SizedBox(height: 3,),
             SizedBox(height: 24,width: width-50,child: const Text('目的地',style: TextStyle(fontSize: 18),),),
-            TextField(controller:controller_end, decoration: const InputDecoration(hintText: '请输入目的地',)),
-            const SizedBox(height: 12,),
+            TextField(controller:controller_end, decoration: const InputDecoration(hintText: '请输入目的地',),maxLength: 15,),
+            const SizedBox(height: 3,),
             SizedBox(height: 24,width: width-50,child: const Text('拼车人数',style: TextStyle(fontSize: 18),),),
             TextField(controller:controller_people, maxLength: 1,
                 keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[1-4]"))],
+                inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[2-4]"))],
                 decoration: const InputDecoration(
-                  hintText: '请输入人数(1-4，包括自己哟)',
+                  hintText: '请输入人数(2-4，包括自己哟)',
             )),
             const SizedBox(height: 3,),
             SizedBox(height: 24,width: width-50,child: const Text('拼车日期',style: TextStyle(fontSize: 18),),),
@@ -121,14 +151,14 @@ class _Post_postState extends State<Post_post> {
               onChanged: (val) {
                 ddate=val.toString();
                 //rint(ddate);
-                String t_yearnew=ddate.substring(0,4);
-                t_year=int.parse(t_yearnew);
+                String tYearnew=ddate.substring(0,4);
+                t_year=int.parse(tYearnew);
                 //print(t_year);
-                String t_monthnew=ddate.substring(5,7);
-                t_month=int.parse(t_monthnew);
+                String tMonthnew=ddate.substring(5,7);
+                t_month=int.parse(tMonthnew);
                 //print(t_month);
-                String t_daynew = ddate.substring(8,10);
-                t_day = int.parse(t_daynew);
+                String tDaynew = ddate.substring(8,10);
+                t_day = int.parse(tDaynew);
                 //print(t_day);
                 },
             ),
@@ -142,11 +172,11 @@ class _Post_postState extends State<Post_post> {
               onChanged: (val) {
                 ttime=val.toString();
                 //print(ttime);
-                String t_hournew=ttime.substring(0,2);
-                t_hour =  int.parse(t_hournew);
+                String tHournew=ttime.substring(0,2);
+                t_hour =  int.parse(tHournew);
                 //print(t_hour);
-                String t_minutenew = ttime.substring(3,5);
-                t_minute = int.parse(t_minutenew);
+                String tMinutenew = ttime.substring(3,5);
+                t_minute = int.parse(tMinutenew);
                 //print(t_minute);
                 },
             ),
@@ -157,7 +187,7 @@ class _Post_postState extends State<Post_post> {
               controller: controller_decoration,
               maxLines: 15,
               maxLength: 200,
-              decoration: InputDecoration.collapsed(hintText: "请输入描述（选填）"),
+              decoration: const InputDecoration.collapsed(hintText: "请输入描述"),
             ),),
           ],),),
         ),

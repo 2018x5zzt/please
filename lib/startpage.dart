@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:please/UserId_global.dart';
 import 'package:please/loginpage.dart';
 import 'package:please/rootpage.dart';
@@ -60,7 +61,6 @@ class _StartPageState extends State<StartPage> {
     Map <String,dynamic> data = response.data;
     //print(data);
     Map <String,dynamic> dd = data["data"];
-    dd["heading"]='';
     //print(dd);
     BaseData basedata= BaseData.fromJson(dd);
     //print(basedata);
@@ -68,6 +68,8 @@ class _StartPageState extends State<StartPage> {
     User_qq = basedata.qq;
     User_wechat = basedata.wechat;
     User_major = basedata.major;
+    User_heading=dd['heading'];
+    print('heading'+User_heading);
     if(basedata.gender=='M') User_Gender = 0;
     //else if(basedata.gender=='F') User_Gender = 1;
     else User_Gender =1;
@@ -79,6 +81,22 @@ class _StartPageState extends State<StartPage> {
   Timer? _timer;
   // ignore: non_constant_identifier_names
   var _CurrentTime = 0;
+
+  String appName ='';
+  String packageName = '';
+  String version = '';
+  String buildNumber = '';
+
+  void getVersion() async{
+    WidgetsFlutterBinding.ensureInitialized();
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    appName = packageInfo.appName;
+    packageName = packageInfo.packageName;
+    version = packageInfo.version;
+    buildNumber = packageInfo.buildNumber;
+  }
 
   void _jumprootpage(){
     _timer!.cancel();
@@ -93,14 +111,14 @@ class _StartPageState extends State<StartPage> {
   void initState() {
     super.initState();
     zzt=false;
-
+    getVersion();
     _timer = Timer.periodic(const Duration(milliseconds: 1000), (timer)  {
       if(mounted){
         setState(() {
           _CurrentTime++;
         });
       }
-      if(_CurrentTime == 2) {
+      if(_CurrentTime == 4) {
        // _jumprootpage();
         getData().then((value){
           // ignore: unrelated_type_equality_checks
@@ -140,6 +158,7 @@ class _StartPageState extends State<StartPage> {
           builder: (BuildContext context ) => LoginPage(),
         ),
             (route) => false);
+
   }
   @override
   void dispose(){
@@ -158,8 +177,9 @@ class _StartPageState extends State<StartPage> {
               fontSize: 40,
             ),
           ),),
-          Align(alignment: Alignment(0, 0.65),child: Text('天外天工作室',style: TextStyle(fontSize: 18,color: Colors.grey),)),
-          Align(alignment: Alignment(0, 0.75),child: Text('成双成队',style: TextStyle(fontSize: 16,color: Colors.grey),)),
+          Align(alignment: Alignment(0,0.8),child: Text('v1.1.5',style: TextStyle(fontSize: 14,color: Colors.grey),),),
+          Align(alignment: Alignment(0, 0.6),child: Text('天外天工作室',style: TextStyle(fontSize: 18,color: Colors.grey),)),
+          Align(alignment: Alignment(0, 0.7),child: Text('成双成队',style: TextStyle(fontSize: 16,color: Colors.grey),)),
 
         ],
       ),

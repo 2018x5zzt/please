@@ -222,6 +222,10 @@ class _XiaoXiState extends State<XiaoXi> {
                               child: Row(children: <Widget>[
                                 Container(
                                   width: 70, height: 70,
+                                  child: ClipOval(
+                                    child: (TZ[i]["heading"]=='') ? Image.asset('assets/png/帖子.png') :
+                                    Image.network(TZ[i]['heading'],fit: BoxFit.cover,),
+                                  ),
                                   decoration: BoxDecoration(
                                     image: DecorationImage(image: AssetImage("assets/png/帖子.png")),
                                     borderRadius: BorderRadius.circular(43),

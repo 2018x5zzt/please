@@ -1,22 +1,23 @@
-import 'package:dio/dio.dart';
+// ignore_for_file: camel_case_types, non_constant_identifier_names, duplicate_ignore
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:please/Information_ui/bigPicture.dart';
 import 'package:please/UserId_global.dart';
-import 'package:please/gerenxinxigenggai.dart';
 import 'package:please/fankui.dart';
+import 'package:please/gerenxinxigenggai.dart';
 import 'package:please/loginpage.dart';
-import 'package:please/utils/BaseData.dart';
 import 'package:please/utils/Sp.dart';
 
-class GeRenZhongXin extends StatefulWidget {
-  const GeRenZhongXin({Key? key}) : super(key: key);
+class geRenZhongXin extends StatefulWidget {
+  const geRenZhongXin.geRen_zhongXin({Key? key}) : super(key: key);
 
   @override
-  _GeRenZhongXinState createState() => _GeRenZhongXinState();
+  _geRenZhongXinState createState() => _geRenZhongXinState();
 }
 
-class _GeRenZhongXinState extends State<GeRenZhongXin> {
+class _geRenZhongXinState extends State<geRenZhongXin> {
+  // ignore: prefer_typing_uninitialized_variables
   var controller_1;
   // ignore: prefer_typing_uninitialized_variables, non_constant_identifier_names
   var controller_qq;
@@ -29,21 +30,23 @@ class _GeRenZhongXinState extends State<GeRenZhongXin> {
   @override
   void initState(){
     super.initState();
+    if (kDebugMode) {
+      print('heading' + User_heading);
+    }
   }
-  @override
-
-  /*sharedpreference本地*/
+  /*sharedPreference本地*/
   String? userId;
   String? userPass;
   getData() async{
     String? _userId = await Storage.getString("userId");
     String? _userPass = await Storage.getString("userPass");
     //print("_id:$_userId");
-   // print("_pwsd:$_userPass");
     setState(() {
       userId=_userId;
       userPass=_userPass;
-      print('get完成');
+      if (kDebugMode) {
+        print('get完成');
+      }
     });
   }
   // 设置数据
@@ -66,7 +69,7 @@ class _GeRenZhongXinState extends State<GeRenZhongXin> {
       userPass=null;
     });
   }
-  /*sharedpreference本地*/
+  /*sharedPreference本地*/
 
   @override
 
@@ -88,125 +91,374 @@ class _GeRenZhongXinState extends State<GeRenZhongXin> {
         ),
 
          */
-        backgroundColor: const Color(0x778B80A4),
+        backgroundColor: const Color(0xFFC8C4DB),
         actions: [
           GestureDetector(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ChangePersonalInformation())).then((resultData) {
-                print('返回');
-                Future.delayed(Duration(microseconds: 1000)).then((value) {
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const ChangePersonalInformation())).then((resultData) {
+                if (kDebugMode) {
+                  print('返回');
+                }
+                Future.delayed(const Duration(microseconds: 1000)).then((value) {
                   setState(() {
                   });
                 });
-
               });
             },
-            child: Container(height: 40,width: 60,child: Row(children: <Widget>[
-              Text('更改',style: TextStyle(color: Colors.black,fontSize: 17),),
-              ImageIcon(AssetImage('assets/png/jinru.png'),color: Colors.black,),
-            ],),),
-          ),
+            child: SizedBox(
+              height: 40,
+              width: 50,
+              child: Row(
+                children: const <Widget>[
+                  Text(
+                    '更改',
+                    style: TextStyle(color: Colors.black, fontSize: 17,fontWeight: FontWeight.w600),
+                  ),
 
-          ],
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
-      body: Container(
-        width: width,
-        height: height,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0x778B80A4),
-              Color(0x008B80A4),
+      body: SingleChildScrollView(
+        child: Container(
+          width: width,
+          height: height,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFC8C4DB),
+                Color(0xFFF3F3F3),
+                Color(0xFFF3F3F3),
+              ],
+            ),
+          ),
+          child: Row(
+            children: <Widget>[
+              SizedBox(
+                height: height,
+                width: 35,
+              ),
+              SizedBox(
+                height: height,
+                width: width - 70,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 180,
+                      width: width - 70,
+                      child: Stack(
+                        children: <Widget>[
+                          Align(
+                              alignment: const Alignment(0, -0.4),
+                              child: Container(
+                                width: 120,
+                                height: 120,
+                                decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(60)),
+                                    color: Colors.white),
+                                child: Center(
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      if (kDebugMode) {
+                                        print('你好');
+                                      }
+                                      if(User_heading!='') Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ShowBigPicture(imageUrl: User_heading,)));
+                                    },
+                                    child: Container(
+                                      width: 105,
+                                      height: 105,
+                                      decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(105))),
+                                      child: ClipOval(
+                                        child: (User_heading == '')
+                                            ? const Image(
+                                                image: AssetImage(
+                                                    'assets/png/帖子.png'))
+                                            : Image.network(
+                                                User_heading,
+                                                fit: BoxFit.cover,
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )),
+                          Align(
+                            alignment: const Alignment(0, 0.95),
+                            child: Text(
+                              User_Nickname,
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 27,
+                    ),
+                    Container(
+                        width: width - 70,
+                        height: 150,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            SizedBox(
+                              width: width - 120,
+                              height: 30,
+                              child: Stack(
+                                children: <Widget>[
+                                  const Align(
+                                    alignment: Alignment(-1, 0),
+                                    child: Text(
+                                      '昵称 :',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: const Alignment(1, 0),
+                                    child: Text(
+                                      User_Nickname,
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.black),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: width - 120,
+                              height: 30,
+                              child: Stack(
+                                children: <Widget>[
+                                  const Align(
+                                    alignment: Alignment(-1, 0),
+                                    child: Text(
+                                      '性别 :',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: const Alignment(1, 0),
+                                    child: Text(
+                                      (User_Gender == 0) ? '男' : '女',
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: width - 120,
+                              height: 30,
+                              child: Stack(
+                                children: <Widget>[
+                                  const Align(
+                                    alignment: Alignment(-1, 0),
+                                    child: Text(
+                                      '专业 :',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: const Alignment(1, 0),
+                                    child: Text(
+                                      User_major,
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.black),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        )),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: width - 70,
+                      height: 150,
+                      padding: const EdgeInsets.all(15),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          SizedBox(
+                            width: width - 120,
+                            height: 30,
+                            child: Stack(
+                              children: <Widget>[
+                                const Align(
+                                  alignment: Alignment(-1, 0),
+                                  child: Text(
+                                    '校区 :',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: const Alignment(1, 0),
+                                  child: Text(
+                                    (User_campus == 0) ? '北洋园' : '卫津路',
+                                    style: const TextStyle(
+                                        fontSize: 15, color: Colors.black),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: width - 120,
+                            height: 30,
+                            child: Stack(
+                              children: <Widget>[
+                                const Align(
+                                  alignment: Alignment(-1, 0),
+                                  child: Text(
+                                    'QQ :',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Align(
+                                    alignment: const Alignment(1, 0),
+                                    child: Text(
+                                      User_qq,
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.black),
+                                    ))
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: width - 120,
+                            height: 30,
+                            child: Stack(
+                              children: <Widget>[
+                                const Align(
+                                  alignment: Alignment(-1, 0),
+                                  child: Text(
+                                    '微信 :',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Align(
+                                    alignment: const Alignment(1, 0),
+                                    child: Text(
+                                      User_wechat,
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.black),
+                                    ))
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        removeData().then((value) {
+                          if (kDebugMode) {
+                            print(userId);
+                          }
+                          if (kDebugMode) {
+                            print(userPass);
+                          }
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => const LoginPage(),
+                              ),
+                              (route) => false);
+                        });
+                      },
+                      child: Container(
+                        width: width - 70,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            '退出登录',
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      width: width - 70,
+                      height: 30,
+                      child: Stack(
+                        children: <Widget>[
+                          Align(
+                            alignment: const Alignment(1.0, 0),
+                            child: GestureDetector(
+                                onTap: () {
+                                  if (kDebugMode) {
+                                    print('反馈');
+                                  }
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const BackSeed()));
+                                },
+                                child: const Text(
+                                  '遇到问题了？点我反馈！',
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.blue),
+                                )),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: height,
+                width: 35,
+              ),
             ],
           ),
         ),
-        child: Row(children: <Widget>[
-          SizedBox(height: height,width: 35,),
-          SizedBox(height: height,width: width-70,child: Column(children: <Widget>[
-            SizedBox(height: 180,width: width-70,
-              child: Stack(children: <Widget>[
-                Align(alignment: const Alignment(0,-0.4),child: Container(width: 110,height: 110,
-                  decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(55)),
-                      color: Colors.blue),)),
-                Align(alignment: const Alignment(0,0.8),child: Text(User_Nickname,style: TextStyle(fontSize: 18),),)
-              ],),
-            ),
-            Container(width: width-70,height: 150,decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            ),
-                padding: EdgeInsets.all(15),
-                child: Column(mainAxisAlignment: MainAxisAlignment.spaceAround,children: <Widget>[
-                  SizedBox(width: width-120,height: 30,child: Stack(children: <Widget>[
-                    const Align(alignment: Alignment(-1,0),child: Text('昵称 :',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),),
-                    Align(alignment: const Alignment(1,0),child: Text(User_Nickname,style: TextStyle(fontSize: 15,color: Colors.black),),)
-                  ],),),
-                  SizedBox(width: width-120,height: 30,child: Stack(children: <Widget>[
-                    const Align(alignment: Alignment(-1,0),child: Text('性别 :',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),),
-                    Align(alignment: const Alignment(1,0),child: Text((User_Gender==0) ? '男':'女',style: TextStyle(fontSize: 15,color: Colors.black),),),
-                  ],),),
-                  SizedBox(width: width-120,height: 30,child: Stack(children: <Widget>[
-                    const Align(alignment: Alignment(-1,0),child: Text('专业 :',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),),
-                    Align(alignment: const Alignment(1,0),child: Text(User_major,style: TextStyle(fontSize: 15,color: Colors.black),),)
-                  ],),),
-                ],)
-            ),
-            const SizedBox(height: 20,),
-            Container(width: width-70,height: 150,
-              padding: const EdgeInsets.all(15),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                color: Colors.white,
-              ),child: Column(mainAxisAlignment: MainAxisAlignment.spaceAround,children: <Widget>[
-                SizedBox(width: width-120,height: 30,child: Stack(children: <Widget>[
-                  const Align(alignment: Alignment(-1,0),child: Text('校区 :',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),),
-                  Align(alignment: const Alignment(1,0),child: Text((User_campus==0) ? '北洋园':'卫津路',style: TextStyle(fontSize: 15,color: Colors.black),),)
-                ],),),
-                SizedBox(width: width-120,height: 30,child: Stack(children: <Widget>[
-                  const Align(alignment: Alignment(-1,0),child: Text('QQ :',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),),
-                  Align(alignment: const Alignment(1,0),child: Text(User_qq,style: TextStyle(fontSize: 15,color: Colors.black),))
-                ],),),
-                SizedBox(width: width-120,height: 30,child: Stack(children: <Widget>[
-                  const Align(alignment: Alignment(-1,0),child: Text('微信 :',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),),
-                  Align(alignment: const Alignment(1,0),child: Text(User_wechat,style: TextStyle(fontSize: 15,color: Colors.black),))
-                ],),),
-              ],),),
-            const SizedBox(height: 20,),
-            GestureDetector(
-              onTap: (){
-                removeData().then((value){
-                  if (kDebugMode) {
-                    print(userId);
-                  }
-                  if (kDebugMode) {
-                    print(userPass);
-                  }
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
-                });
-              },
-              child: Container(width: width-70,height: 50,decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Center(child: Text('退出登录',style: TextStyle(color: Colors.red,fontSize: 18,fontWeight: FontWeight.bold),),),
-              ),
-            ),
-            const SizedBox(height: 10,),
-            Container(width: width-70,height: 30,
-              child: Stack(children: <Widget>[
-                Align(alignment: const Alignment(1.0,0),child: GestureDetector(
-                  onTap: (){
-                    print('反馈');
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => BackSeed()));
-                  },
-                    child: Text('遇到问题了？点我反馈！',style: TextStyle(fontSize: 13,color: Colors.blue),)),)
-              ],),
-            ),
-          ],),),
-          SizedBox(height: height,width: 35,),
-        ],),
       ),
     );
   }

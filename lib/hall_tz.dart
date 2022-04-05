@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:please/detail_tz.dart';
 import 'package:please/postpost.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -69,7 +70,7 @@ class _CallHallState extends State<CallHall> {
     }
       if(zzzz==false){
         TZ.clear();
-        //print(url);
+        print(url);
         Response response = await dio.get(url);
         list.clear();
         Map <String,dynamic> data = response.data;
@@ -82,6 +83,20 @@ class _CallHallState extends State<CallHall> {
 
         for(var i=0 ; i < itemcount ; i++){
           Map<String,dynamic> listdynamic = list[i];
+
+          if(listdynamic["month"].toString().length==1){
+            listdynamic['month']='0'+listdynamic['month'].toString();
+          }
+          if(listdynamic["day"].toString().length==1){
+            listdynamic['day']='0'+listdynamic['day'].toString();
+          }
+          if(listdynamic["hour"].toString().length==1){
+            listdynamic['hour']='0'+listdynamic['hour'].toString();
+          }
+          if(listdynamic["minute"].toString().length==1){
+            listdynamic['minute']='0'+listdynamic['minute'].toString();
+          }
+          print(listdynamic);
           TZ.add(listdynamic);
         }
       }
@@ -110,6 +125,19 @@ class _CallHallState extends State<CallHall> {
     TZ = [];
     for(var i=0 ; i < itemcount ; i++){
       Map<String,dynamic> listdynamic = list[i];
+      if(listdynamic["month"].toString().length==1){
+        listdynamic['month']='0'+listdynamic['month'].toString();
+      }
+      if(listdynamic["day"].toString().length==1){
+        listdynamic['day']='0'+listdynamic['day'].toString();
+      }
+      if(listdynamic["hour"].toString().length==1){
+        listdynamic['hour']='0'+listdynamic['hour'].toString();
+      }
+      if(listdynamic["minute"].toString().length==1){
+        listdynamic['minute']='0'+listdynamic['minute'].toString();
+      }
+      print(listdynamic);
       TZ.add(listdynamic);
     }
     setState(() {
@@ -133,12 +161,15 @@ class _CallHallState extends State<CallHall> {
   }
 
   Future<Null> _loadMoreData(){
-
-    return Future.delayed(Duration(seconds: 1),(){
+    if(itemcount!=list.length) Fluttertoast.showToast(msg: '加载更多数据ing');
+    return Future.delayed(Duration(milliseconds: 700),(){
       if(mounted){
         itemcount = (list.length > itemcount + 5) ? itemcount+5 : list.length;
         //print('加载更多,$itemcount');
         search_zzt();
+      }
+      if(itemcount==list.length){
+        Fluttertoast.showToast(msg: '加载到底啦！qwq');
       }
     });
   }
@@ -167,7 +198,7 @@ String Deal_time(String ttt){
         centerTitle: true,
         leading: IconButton(
           icon: const ImageIcon(AssetImage('assets/png/返回.png'),color: Colors.black,),
-          onPressed: (){Navigator.of(context).pop();},
+          onPressed: (){Navigator.of(context).pop('refresh');},
         ),
         actions: <Widget>[
           IconButton(
@@ -176,8 +207,14 @@ String Deal_time(String ttt){
               Navigator.push(context, MaterialPageRoute(
                   builder: (BuildContext context) => Post_post()
               )).then((value) {
-                print('你好');
-                getpostdata();
+                print('返回回调');
+                controller_search.clear();
+                sszzt=false;
+                getpostdata().then((value){
+                  setState(() {
+
+                  });
+                });
               });
             },
             icon:const ImageIcon(AssetImage('assets/png/fatie.png'),color: Color(0xffb3acc1),),
@@ -329,7 +366,16 @@ String Deal_time(String ttt){
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
                               var tmp = TZ[i]["id"];
                               return Detail_tz(postid: '$tmp',);
-                            }));
+                            })).then((value) {
+                              print('返回回调');
+                              controller_search.clear();
+                              sszzt=false;
+                              getpostdata().then((value) {
+                                setState(() {
+                                });
+                              });
+
+                            });
                           },
                           child: Container(
                             decoration: const BoxDecoration(
@@ -341,7 +387,10 @@ String Deal_time(String ttt){
                                 ///头像的部分
                                 Container(
                                   height: 40,width: 40,
-                                  decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(100)),image: DecorationImage(fit: BoxFit.cover,image:AssetImage("assets/png/帖子.png"), )),
+                                  child: ClipOval(
+                                    child:
+                                      TZ[i]['heading']=='' ? Image.asset('assets/png/帖子.png') : Image.network(TZ[i]['heading'],fit: BoxFit.cover,)
+                                  ),
                                 ),
                                 const SizedBox(width: 10,),
                                 ///用户名，发布时间
@@ -354,19 +403,19 @@ String Deal_time(String ttt){
                               SizedBox(height: 24,width: width-50,child: Row(children: <Widget>[
                                 Container(height: 24,width: 60,decoration: const BoxDecoration(color: Color(0xFFA49BB5),borderRadius: BorderRadius.all(Radius.circular(5)),),child:
                                 const Center(child: Text('出发地',style: TextStyle(fontSize: 15,color: Colors.white),)),),
-                                const SizedBox(width: 5,), Text(TZ[i]["startLocation"],style: const TextStyle(fontSize: 15,),),
+                                const SizedBox(width: 5,), SizedBox(width:width-130,height:24,child: Text(TZ[i]["startLocation"],overflow: TextOverflow.ellipsis,style: const TextStyle(fontSize: 15,),)),
                               ],),),
                               const SizedBox(height: 4,),
                               SizedBox(height: 24,width: width-50,child: Row(children: <Widget>[
                                 Container(height: 24,width: 60,decoration: const BoxDecoration(color: Color(0xFFA49BB5),borderRadius: BorderRadius.all(Radius.circular(5)),),child:
                                 const Center(child: Text('目的地',style: TextStyle(fontSize: 15,color: Colors.white),)),),
-                                const SizedBox(width: 5,), Text(TZ[i]["destination"],style: const TextStyle(fontSize: 15,),),
+                                const SizedBox(width: 5,), SizedBox(width:width-130,height:24,child: Text(TZ[i]["destination"],overflow: TextOverflow.ellipsis,style: const TextStyle(fontSize: 15,),)),
                               ],),),
                               const SizedBox(height: 4,),
                               SizedBox(height: 24,width: width-50,child: Row(children: <Widget>[
                                 Container(height: 24,width: 75,decoration: const BoxDecoration(color: Color(0xFFA49BB5),borderRadius: BorderRadius.all(Radius.circular(5)),),child:
                                 const Center(child: Text('拼车时间',style: TextStyle(fontSize: 15,color: Colors.white),)),),
-                                const SizedBox(width: 5,), Text(TZ[i]["year"].toString()+'年'+TZ[i]["month"].toString()+'月'+TZ[i]["day"].toString()+'日 '+TZ[i]["hour"].toString()+':'+TZ[i]["minute"].toString(),style: const TextStyle(fontSize: 15,),),
+                                const SizedBox(width: 5,), SizedBox(width:width-130,height:24,child: Text(TZ[i]["year"].toString()+'年'+TZ[i]["month"].toString()+'月'+TZ[i]["day"].toString()+'日 '+TZ[i]["hour"].toString()+':'+TZ[i]["minute"].toString(),style: const TextStyle(fontSize: 15,overflow: TextOverflow.ellipsis,),)),
                               ],),),
                               const SizedBox(height: 4,),
                               Stack(
@@ -374,7 +423,7 @@ String Deal_time(String ttt){
                                   SizedBox(height: 24,width: width-50,child: Row(children: <Widget>[
                                     Container(height: 24,width: 40,decoration: const BoxDecoration(color: Color(0xFFA49BB5),borderRadius: BorderRadius.all(Radius.circular(5)),),child:
                                     const Center(child: Text('描述',style: TextStyle(fontSize: 15,color: Colors.white),)),),
-                                    const SizedBox(width: 5,), SizedBox(width: width-100,height: 24,child: Text(TZ[i]["content"],style:
+                                    const SizedBox(width: 5,), SizedBox(width: width-105,height: 24,child: Text(TZ[i]["content"],style:
                                     const TextStyle(fontSize: 15),maxLines: 1,overflow: TextOverflow.ellipsis,),),
                                   ],),),
 

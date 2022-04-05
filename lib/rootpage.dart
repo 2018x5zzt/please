@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:please/Information_ui/New_Xiaoxi.dart';
-import 'package:please/xiaoxi.dart';
 import 'package:please/shouye.dart';
 import 'package:please/gerenzhongxin.dart';
 
-import 'gerenxinxigenggai.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({Key? key}) : super(key: key);
@@ -16,6 +16,7 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootState extends State<RootPage> {
+  DateTime? lastPopTime;
   final List<BottomNavigationBarItem> bottomNavItems = [
     BottomNavigationBarItem(
       icon: Transform.scale(scale: 1,child: const ImageIcon(AssetImage("assets/png/首页.png")),),
@@ -33,7 +34,7 @@ class _RootState extends State<RootPage> {
 
   int currentIndex = 0;
 
-  final pages = [ShouYe(),NewXiaoxi(),GeRenZhongXin()];
+  final pages = [ShouYe(),NewXiaoxi(),geRenZhongXin.geRen_zhongXin()];
 
   @override
   void initState() {
@@ -43,15 +44,28 @@ class _RootState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavItems,
-        currentIndex: currentIndex,
-        onTap: (index) {
-          _changePage(index);
-        },
+    return WillPopScope(
+      child: Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          items: bottomNavItems,
+          currentIndex: currentIndex,
+          onTap: (index) {
+            _changePage(index);
+          },
+        ),
+        body: pages[currentIndex],
+
       ),
-      body: pages[currentIndex],
+      onWillPop: ()async{
+        if(lastPopTime == null || DateTime.now().difference(lastPopTime!) > const Duration(seconds: 2)) {
+          lastPopTime = DateTime.now();
+          Fluttertoast.showToast(msg: '再按一次退出!');
+          return false;
+        }else{
+          lastPopTime = DateTime.now();
+          return await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+        }
+      },
     );
   }
 

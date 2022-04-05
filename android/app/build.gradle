@@ -57,6 +57,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        /*下面我自己添加的*/
+        multiDexEnabled true
     }
 
     /*为了打包我自己添加的*/
@@ -89,4 +91,7 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation files('libs/sunjce_provider.jar')
+
+    /*下面这句我自己添加的*/
+    implementation 'com.android.support:multidex:1.0.3'
 }

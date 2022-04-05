@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:please/rootpage.dart';
 import 'package:please/RegisterPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -80,14 +81,15 @@ class _LoginPageState extends State<LoginPage> {
     Map <String,dynamic> data = response.data;
     //print(data);
     Map <String,dynamic> dd = data["data"];
-    dd["heading"]='';
-    //print(dd);
+    print(dd);
     BaseData basedata= BaseData.fromJson(dd);
     //print(basedata);
     User_Nickname = basedata.nickname;
     User_qq = basedata.qq;
     User_wechat = basedata.wechat;
     User_major = basedata.major;
+    User_heading=dd["heading"];
+    print("userheading"+User_heading);
     if(basedata.gender=='M') User_Gender = 0;
     //else if(basedata.gender=='F') User_Gender = 1;
     else User_Gender =1;
@@ -107,6 +109,11 @@ class _LoginPageState extends State<LoginPage> {
   bool _finishinput = false;
   var controller;
   var _controller;
+  String appName ='';
+  String packageName = '';
+  String version = '';
+  String buildNumber = '';
+
 
   @override
   void initState() {
@@ -124,7 +131,6 @@ class _LoginPageState extends State<LoginPage> {
       _finishinput = true;
     }
     getData();
-
   }
   void _touchtochange(){
     setState(() {
@@ -158,83 +164,36 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        child: SizedBox(
-          height: 1000,
-          child: Column(children: <Widget>[
-            Container(height: 200,),
-            Container(
-              height: 50,
-              width: 150,
-            //  color: Colors.yellow,
-              child : Stack(
-                children: <Widget>[
-                  Positioned(child: Container(width: 53,height: 28,color: const Color(0xffb3acc1),)),
-                  Positioned(left: 30,top: 20,child: Container(width: 120,height: 32,color: const Color(0x99b3acc1),)),
-                  const Positioned(left: 16, top: 8, child: Text('WELCOME', style: TextStyle(fontSize: 25),),),
-                ],
+      body: SizedBox(
+        height: 1000,
+        child: Column(children: <Widget>[
+          Container(height: 200,),
+          Container(
+            height: 50,
+            width: 150,
+          //  color: Colors.yellow,
+            child : Stack(
+              children: <Widget>[
+                Positioned(child: Container(width: 53,height: 28,color: const Color(0xffb3acc1),)),
+                Positioned(left: 30,top: 20,child: Container(width: 120,height: 32,color: const Color(0x99b3acc1),)),
+                const Positioned(left: 16, top: 8, child: Text('WELCOME', style: TextStyle(fontSize: 25),),),
+                //Align(alignment: Alignment(0,0),child: Text('WELCOME',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),)
+              ],
+            ),
+          ),
+          Container(height: 60,),
+          SizedBox(
+            width: 400,
+            height: 50,
+            child: Row(children: <Widget>[
+              Container(
+                width: 50,
               ),
-            ),
-            Container(height: 50,),
-            SizedBox(
-              width: 400,
-              height: 50,
-              child: Row(children: <Widget>[
-                Container(
-                  width: 50,
-                ),
-                Expanded(child:
-                  TextField(
-                    controller: controller,
-                    //onChanged: (text){print('输入改变'+text);},
-                    onChanged: (text){inputfinished();_controller.clear();},
-                    textAlignVertical: TextAlignVertical.bottom,
-                    decoration: InputDecoration(
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(width: 2,color: Color(0xffb3acc1),),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(width: 2,color: Color(0x99b3acc1),),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      hintText: '请输入账号',
-                      hintStyle: const TextStyle(color:Color(0xFFb3acc1), ),
-                      prefixIcon: IconButton(
-                        icon: Image.asset("assets/png/账号.png"),
-                        onPressed: (){},
-                        iconSize: 5,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: (){controller.clear();_controller.clear();},
-                      ),
-
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 50,
-                ),
-              ],),
-            ),
-            Container(
-              height: 30,
-            ),
-            SizedBox(
-              width: 400,
-              height: 50,
-              child: Row(children: <Widget>[
-                Container(
-                  width: 50,
-                ),
-                Expanded(child:
+              Expanded(child:
                 TextField(
-                  obscureText: _showpassword,
-                  controller: _controller,
-                  onChanged: (text){inputfinished();},
+                  controller: controller,
                   //onChanged: (text){print('输入改变'+text);},
-
+                  onChanged: (text){inputfinished();_controller.clear();},
                   textAlignVertical: TextAlignVertical.bottom,
                   decoration: InputDecoration(
                     focusedBorder: const OutlineInputBorder(
@@ -245,81 +204,131 @@ class _LoginPageState extends State<LoginPage> {
                       borderSide: BorderSide(width: 2,color: Color(0x99b3acc1),),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
-                    hintText: '请输入密码',
-                    hintStyle: const TextStyle(color:Color(0xFFb3acc1), ),
+                    hintText: '请输入账号',
+                    hintStyle: const TextStyle(
+                      //color:Color(0xFFb3acc1),
+                      color: Colors.grey
+                    ),
                     prefixIcon: IconButton(
-                      icon: Image.asset("assets/png/密码.png"),
+                      icon: Image.asset("assets/png/账号.png"),
                       onPressed: (){},
                       iconSize: 5,
                     ),
-
-                    suffixIcon: GestureDetector(
-                      onTap: (){_touchtochange();},
-                      child: Icon(_showpassword ? Icons.visibility_off : Icons.visibility),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: (){controller.clear();_controller.clear();},
                     ),
+
                   ),
                 ),
-                ),
-                Container(
-                  width: 50,
-                ),
-              ],),
-            ),
-            Container(
-              height: 60,
-            ),
-            GestureDetector(
-              onTap: (){
-                //_jumprootpage();
-                //print('尝试登录');
-                if(_finishinput == false){
-                  Fluttertoast.showToast(msg: '请输入账号和密码！');
-                }
-                else{
-                  TryToLogin();
-                  Future.delayed(Duration(seconds: 1),(){
-                    if(zzt == true) {
-                      UserId_Global = controller.text;
-                      User_Password = _controller.text;
-                      //removeData();
-                      setData().then((value){
-                        Get_personal_information().then((value) => _jumprootpage());
-                      });
-                      /*
-
-                      getData().then((value) {
-                        print(userId);
-                        print(userPass);
-                        print('完成');
-                      });
-
-                       */
-                    }
-                    else {
-                      Fluttertoast.showToast(msg: '用户名或密码错误！');
-                    }
-                  });
-                }
-              },
-              child: Container(
-                height: 50,
-                width: 140,
-                decoration: BoxDecoration(
-                  color: _finishinput ? const Color(0xCC3F394B): const Color(0xffb3acc1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                alignment: Alignment.center,
-                child: const Text('登  录', style: TextStyle(fontSize: 22, color: Colors.white,),),
               ),
+              Container(
+                width: 50,
+              ),
+            ],),
+          ),
+          Container(
+            height: 30,
+          ),
+          SizedBox(
+            width: 400,
+            height: 50,
+            child: Row(children: <Widget>[
+              Container(
+                width: 50,
+              ),
+              Expanded(child:
+              TextField(
+                obscureText: _showpassword,
+                controller: _controller,
+                onChanged: (text){inputfinished();},
+                //onChanged: (text){print('输入改变'+text);},
 
+                textAlignVertical: TextAlignVertical.bottom,
+                decoration: InputDecoration(
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(width: 2,color: Color(0xffb3acc1),),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(width: 2,color: Color(0x99b3acc1),),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  hintText: '请输入密码',
+                  hintStyle: const TextStyle(color:Colors.grey, ),
+                  prefixIcon: IconButton(
+                    icon: Image.asset("assets/png/密码.png"),
+                    onPressed: (){},
+                    iconSize: 5,
+                  ),
+
+                  suffixIcon: GestureDetector(
+                    onTap: (){_touchtochange();},
+                    child: Icon(_showpassword ? Icons.visibility_off : Icons.visibility),
+                  ),
+                ),
+              ),
+              ),
+              Container(
+                width: 50,
+              ),
+            ],),
+          ),
+          Container(
+            height: 50,
+          ),
+          GestureDetector(
+            onTap: (){
+
+
+
+              //_jumprootpage();
+              //print('尝试登录');
+              if(_finishinput == false){
+                Fluttertoast.showToast(msg: '请输入账号和密码！');
+              }
+              else{
+                TryToLogin();
+                Future.delayed(const Duration(seconds: 1),(){
+                  if(zzt == true) {
+                    UserId_Global = controller.text;
+                    User_Password = _controller.text;
+                    //removeData();
+                    setData().then((value){
+                      Get_personal_information().then((value) => _jumprootpage());
+                    });
+                    /*
+                    getData().then((value) {
+                      print(userId);
+                      print(userPass);
+                      print('完成');
+                    });
+                     */
+                  }
+                  else {
+                    Fluttertoast.showToast(msg: '用户名或密码错误！');
+                  }
+                });
+              }
+            },
+            child: Container(
+              height: 50,
+              width: 140,
+              decoration: BoxDecoration(
+                color: _finishinput ? const Color(0xCC3F394B): const Color(0xffb3acc1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              alignment: Alignment.center,
+              child: const Text('登  录', style: TextStyle(fontSize: 22, color: Colors.white,),),
             ),
-            const SizedBox(height: 15,),
-            TextButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
-            }, child: Text('没有账号？点我注册！',style: TextStyle(fontSize: 14),))
 
-          ],),
-        ),
+          ),
+          const SizedBox(height: 15,),
+          TextButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
+          }, child: const Text('没有账号？点我注册！',style: TextStyle(fontSize: 14),))
+
+        ],),
       ),
     );
   }

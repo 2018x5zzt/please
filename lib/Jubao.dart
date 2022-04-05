@@ -39,20 +39,30 @@ class _JuBaoState extends State<JuBao> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('举报',style: TextStyle(color: Colors.black),),
+        title: const Text('举 报',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
         centerTitle: true,
-        elevation: 1,
+        elevation: 0,
         leading: IconButton(
           icon: const ImageIcon(AssetImage('assets/png/返回.png'),color: Colors.black,),
           onPressed: (){Navigator.of(context).pop();},
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFC8C4DB),
       ),
-      body: SizedBox(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFC8C4DB),
+              Color(0xFFF3F3F3),
+              Color(0xFFF3F3F3),
+            ],
+          ),
+        ),
         height: height,
         width: width,
         child: Stack(children: <Widget>[
-          Opacity(opacity: 0.1,child: Container(color: Colors.grey,),),
           SizedBox(
             width: width,
             height: height,
@@ -69,7 +79,7 @@ class _JuBaoState extends State<JuBao> {
                     maxLines: 15,
                     decoration: const InputDecoration.collapsed(hintText: "请输入举报理由"),
                   ),),
-                  const SizedBox(height: 25,),
+                  const SizedBox(height: 50,),
                   GestureDetector(onTap: (){
                     SubmitJuBao();
                     Fluttertoast.showToast(msg: '举报成功');

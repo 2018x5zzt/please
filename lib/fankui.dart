@@ -76,20 +76,31 @@ class _BackSeedState extends State<BackSeed> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('反馈',style: TextStyle(color: Colors.black),),
+        title: const Text('反 馈',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
         centerTitle: true,
-        elevation: 1,
+        elevation: 0,
         leading: IconButton(
           icon: const ImageIcon(AssetImage('assets/png/返回.png'),color: Colors.black,),
           onPressed: (){Navigator.of(context).pop();},
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFC8C4DB),
       ),
-      body: SizedBox(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFC8C4DB),
+              Color(0xFFF3F3F3),
+              Color(0xFFF3F3F3),
+            ],
+          ),
+        ),
         height: height,
         width: width,
         child: Stack(children: <Widget>[
-          Opacity(opacity: 0.1,child: Container(color: Colors.grey,),),
+          //Opacity(opacity: 0.1,child: Container(color: Colors.grey,),),
           SizedBox(
             width: width,
             height: height,
@@ -97,16 +108,16 @@ class _BackSeedState extends State<BackSeed> {
               children: <Widget>[
                 SizedBox(height: height,width: 25,),
                 Column(children: <Widget>[
-                  SizedBox(height: 25,),
-                  Container(height: 30,width: width-50,alignment: Alignment.centerLeft,child: Text('意见与建议：',style: TextStyle(fontSize: 18,),),),
-                  SizedBox(height: 25,),
+                  const SizedBox(height: 25,),
+                  Container(height: 30,width: width-50,alignment: Alignment.centerLeft,child: const Text('意见与建议：',style: TextStyle(fontSize: 18),),),
+                  const SizedBox(height: 25,),
                   Container(width: width-50,height: 250,decoration:BoxDecoration(color: Colors.white,border: Border.all(color: Colors.grey),),child: TextField(
                     controller: controller,
                     maxLength: 200,
                     maxLines: 15,
                     decoration: InputDecoration.collapsed(hintText: "请留下您的宝贵意见"),
                   ),),
-                  SizedBox(height: 15,),
+                  const SizedBox(height: 50,),
                   GestureDetector(onTap: (){
                     SubmitFankui();
                     print('提交反馈');
