@@ -118,7 +118,6 @@ class _StartPageState extends State<StartPage> {
         });
       }
       if(_CurrentTime == 4) {
-       // _jumprootpage();
         getData().then((value){
           // ignore: unrelated_type_equality_checks
           if(userId!=Null) {
