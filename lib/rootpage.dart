@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:please/Information_ui/New_Xiaoxi.dart';
-import 'package:please/shouye.dart';
 import 'package:please/gerenzhongxin.dart';
-
+import 'package:please/shouye.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({Key? key}) : super(key: key);
@@ -56,14 +55,17 @@ class _RootState extends State<RootPage> {
         body: pages[currentIndex],
 
       ),
-      onWillPop: ()async{
-        if(lastPopTime == null || DateTime.now().difference(lastPopTime!) > const Duration(seconds: 2)) {
+      onWillPop: () async {
+        if (lastPopTime == null ||
+            DateTime.now().difference(lastPopTime!) >
+                const Duration(seconds: 2)) {
           lastPopTime = DateTime.now();
           Fluttertoast.showToast(msg: '再按一次退出!');
           return false;
-        }else{
+        } else {
           lastPopTime = DateTime.now();
-          return await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          return await SystemChannels.platform
+              .invokeMethod('SystemNavigator.pop');
         }
       },
     );
@@ -79,4 +81,3 @@ class _RootState extends State<RootPage> {
     }
   }
 }
-

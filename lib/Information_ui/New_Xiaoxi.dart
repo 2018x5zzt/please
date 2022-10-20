@@ -58,6 +58,7 @@ class _NewXiaoxiState extends State<NewXiaoxi> {
     print(mapp);
     Response response = await dio.post(url,data: mapp);
     var data=response.data;
+    print(data);
     refuseSuccessfully=data["flag"];
     print(refuseSuccessfully);
     getpostdata();

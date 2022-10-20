@@ -1,10 +1,10 @@
-var UserId_Global='';
-var User_Password='';
-var User_Nickname='';
-var User_Gender=0;
+var UserId_Global = '';
+var User_Password = '';
+var User_Nickname = '';
+var User_Gender = 0;
 var User_qq;
 var User_wechat;
 var User_major;
-var User_campus=0;
-var User_heading='';
-var ST_url = '101.201.36.172:520';
+var User_campus = 0;
+var User_heading = '';
+var ST_url = '39.101.75.120:520';
