@@ -29,12 +29,14 @@ class _StartPageState extends State<StartPage> {
       setState(() {
         userId=_userId;
         userPass=_userPass;
-        print('get完成');
+        if (kDebugMode) {
+          print('get完成');
+        }
       });
     }
   }
   var zzt=false;
-  Future <void> TryToLogin() async{
+  Future <void> tryToLogin() async{
     Dio dio = Dio();
     var id = userId;
     var pwd = userPass;
@@ -52,18 +54,15 @@ class _StartPageState extends State<StartPage> {
     }
   }
 
-  Future <void> Get_personal_information() async{
+  Future <void> getPersonalInformation() async{
     Dio dio = Dio();
     String url_1 = "http://$ST_url/users/$UserId_Global";
     Response response = await dio.get(url_1);
     //print('你好你好');
     print(response);
     Map <String,dynamic> data = response.data;
-    //print(data);
     Map <String,dynamic> dd = data["data"];
-    //print(dd);
     BaseData basedata= BaseData.fromJson(dd);
-    //print(basedata);
     User_Nickname = basedata.nickname;
     User_qq = basedata.qq;
     User_wechat = basedata.wechat;
@@ -125,7 +124,7 @@ class _StartPageState extends State<StartPage> {
           if(userId!=Null) {
             // ignore: unrelated_type_equality_checks
             if(userPass!=Null) {
-              TryToLogin().then((value){
+              tryToLogin().then((value){
                 if(zzt == true){
                   UserId_Global = userId!;
                   User_Password = userPass!;
@@ -135,7 +134,7 @@ class _StartPageState extends State<StartPage> {
                   if (kDebugMode) {
                     print(User_Password);
                   }
-                  Get_personal_information().then((value) => _jumprootpage());
+                  getPersonalInformation().then((value) => _jumprootpage());
                 }else{
                   print('失败');
                   _jumpLoginPage();
